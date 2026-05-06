@@ -1,3 +1,4 @@
+// здесь лежат общие настройки для всех запросов к серверу
 const config = {
   baseUrl: "https://mesto.nomoreparties.co/v1/apf-cohort-203",
   headers: {
@@ -6,22 +7,26 @@ const config = {
   },
 };
 
+// эта функция проверяет успешный ли ответ пришел от сервера
 const getResponseData = (res) => {
   return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
 };
 
+// получаем данные текущего пользователя с сервера
 export const getUserInfo = () => {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers,
   }).then(getResponseData);
 };
 
+// получаем список карточек с сервера
 export const getCardList = () => {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers,
   }).then(getResponseData);
 };
 
+// отправляем на сервер новые данные профиля
 export const setUserInfo = ({ name, about }) => {
   return fetch(`${config.baseUrl}/users/me`, {
     method: "PATCH",
@@ -33,6 +38,7 @@ export const setUserInfo = ({ name, about }) => {
   }).then(getResponseData);
 };
 
+// отправляем на сервер новый аватар пользователя
 export const setUserAvatar = (avatar) => {
   return fetch(`${config.baseUrl}/users/me/avatar`, {
     method: "PATCH",
@@ -43,6 +49,7 @@ export const setUserAvatar = (avatar) => {
   }).then(getResponseData);
 };
 
+// отправляем на сервер новую карточку
 export const addNewCard = ({ name, link }) => {
   return fetch(`${config.baseUrl}/cards`, {
     method: "POST",
@@ -54,6 +61,7 @@ export const addNewCard = ({ name, link }) => {
   }).then(getResponseData);
 };
 
+// удаляем карточку по ее id
 export const deleteCardApi = (cardID) => {
   return fetch(`${config.baseUrl}/cards/${cardID}`, {
     method: "DELETE",
@@ -61,6 +69,7 @@ export const deleteCardApi = (cardID) => {
   }).then(getResponseData);
 };
 
+// ставим или убираем лайк в зависимости от текущего состояния
 export const changeLikeCardStatus = (cardID, isLiked) => {
   return fetch(`${config.baseUrl}/cards/likes/${cardID}`, {
     method: isLiked ? "DELETE" : "PUT",
