@@ -16,21 +16,6 @@ const hideInputError = (formElement, inputElement, settings) => {
 
 // функция проверяет одно конкретное поле формы
 const checkInputValidity = (formElement, inputElement, settings) => {
-  // если у поля есть свое сообщение об ошибке то дополнительно проверяем его через регулярку
-  if (inputElement.hasAttribute('data-error-message')) {
-    const regex = /^[a-zA-Zа-яА-ЯёЁ\s\-]+$/;
-    const value = inputElement.value;
-    
-    if (value && !regex.test(value)) {
-      showInputError(
-        formElement, 
-        inputElement, 
-        inputElement.dataset.errorMessage, 
-        settings
-      );
-      return false;
-    }
-  }
 
   // если не прошло pattern показываем кастомное сообщение или стандартное
   if (inputElement.validity.patternMismatch) {

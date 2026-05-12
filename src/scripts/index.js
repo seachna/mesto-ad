@@ -1,4 +1,4 @@
-import { createCardElement, deleteCard, likeCard } from "./components/card.js";
+import { createCardElement, deleteCard, renderLikes } from "./components/card.js";
 import { openModalWindow, closeModalWindow, setCloseModalWindowEventListeners } from "./components/modal.js";
 import { enableValidation, clearValidation } from "./components/validation.js";
 import {
@@ -11,7 +11,6 @@ import {
   changeLikeCardStatus
 } from "./components/api.js";
 
-// тут собраны основные элементы страницы и попапов
 const placesWrap = document.querySelector(".places__list");
 
 const profileFormModalWindow = document.querySelector(".popup_type_edit");
@@ -39,19 +38,16 @@ const avatarFormModalWindow = document.querySelector(".popup_type_edit-avatar");
 const avatarForm = avatarFormModalWindow.querySelector(".popup__form");
 const avatarInput = avatarForm.querySelector(".popup__input");
 
-// элементы попапа информации о карточке для варианта 1
 const cardInfoModalWindow = document.querySelector(".popup_type_info");
 const cardInfoModalTitle = cardInfoModalWindow.querySelector(".popup__title");
 const cardInfoModalInfoList = cardInfoModalWindow.querySelector(".popup__info");
 const cardInfoModalText = cardInfoModalWindow.querySelector(".popup__text");
 const cardInfoModalList = cardInfoModalWindow.querySelector(".popup__list");
 
-// элементы попапа подтверждения удаления для доп задания
 const removeCardModalWindow = document.querySelector(".popup_type_remove-card");
 const removeCardForm = removeCardModalWindow.querySelector(".popup__form");
 const removeCardSubmitButton = removeCardForm.querySelector(".popup__button");
 
-// настройки валидации для всех форм
 const validationSettings = {
   formSelector: ".popup__form",
   inputSelector: ".popup__input",
@@ -61,10 +57,8 @@ const validationSettings = {
   errorClass: "popup__error_visible",
 };
 
-// сюда потом сохраняется id текущего пользователя
 let userID = null;
 
-// сюда временно сохраняем карточку которую хотим удалить
 let cardToDeleteId = null;
 let cardToDeleteElement = null;
 
@@ -153,7 +147,6 @@ const handleCardFormSubmit = (evt) => {
       );
       closeModalWindow(cardFormModalWindow);
       cardForm.reset();
-      clearValidation(cardForm, validationSettings);
     })
     .catch((err) => {
       console.log(err);
@@ -184,7 +177,7 @@ const handleRemoveCardSubmit = (evt) => {
   deleteCardApi(cardToDeleteId)
     .then(() => {
       // после успешного ответа удаляем карточку со страницы и закрываем попап
-      cardToDeleteElement.remove();
+      deleteCard(cardToDeleteElement);
       closeModalWindow(removeCardModalWindow);
       cardToDeleteId = null;
       cardToDeleteElement = null;
@@ -203,8 +196,7 @@ const handleLikeClick = (cardID, cardElement, likeButton) => {
 
   changeLikeCardStatus(cardID, isLiked)
     .then((cardData) => {
-      likeButton.classList.toggle("card__like-button_is-active");
-      cardElement.querySelector(".card__like-count").textContent = cardData.likes.length;
+      renderLikes(cardElement, cardData.likes, userID);
     })
     .catch((err) => {
       console.log(err);
@@ -226,20 +218,6 @@ const createInfoString = (term, description) => {
   infoItem.querySelector(".popup__info-term").textContent = term;
   infoItem.querySelector(".popup__info-description").textContent = description;
   return infoItem;
-};
-
-// создание одного элемента списка пользователей
-const createUserPreview = (userData) => {
-  const template = document.getElementById("popup-info-user-preview-template");
-  const listItem = template.content.cloneNode(true);
-  const badge = listItem.querySelector(".popup__list-item_type_badge");
-
-  if (userData.avatar) {
-    badge.style.backgroundImage = `url(${userData.avatar})`;
-  }
-  badge.title = userData.name;
-
-  return listItem;
 };
 
 // обработчик клика по кнопке i для варианта 1

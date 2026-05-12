@@ -1,6 +1,16 @@
-// эта функция просто меняет состояние кнопки лайка
-export const likeCard = (likeButton) => {
-  likeButton.classList.toggle("card__like-button_is-active");
+export const renderLikes = (cardElement, likes, currentUserID) => {
+  const likeButton = cardElement.querySelector(".card__like-button");
+  const likeCountElement = cardElement.querySelector(".card__like-count");
+
+  likeCountElement.textContent = likes.length;
+
+  const isLiked = likes.some((user) => user._id === currentUserID);
+
+  if (isLiked) {
+    likeButton.classList.add("card__like-button_is-active");
+  } else {
+    likeButton.classList.remove("card__like-button_is-active");
+  }
 };
 
 // эта функция удаляет карточку со страницы
@@ -28,8 +38,7 @@ export const createCardElement = (
   const cardImage = cardElement.querySelector(".card__image");
 
   // находим элемент счетчика лайков и сразу ставим туда количество лайков с сервера
-  const likeCountElement = cardElement.querySelector(".card__like-count");
-  likeCountElement.textContent = data.likes.length;
+  renderLikes(cardElement, data.likes, currentUserID);
 
   // находим кнопку информации для варианта 1
   const infoButton = cardElement.querySelector(".card__control-button_type_info");
