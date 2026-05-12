@@ -1,6 +1,11 @@
-Стартовый набор для выполнения проектной работы Место
+# Mesto
 
-Для запуска приложения необходимо использовать live-server
-![изображение live-server](image.png)
-Live-server является расширением VSCode
-(https://seachna.github.io/mesto-ad-pages/)
+Проектная работа Mesto с подключением к серверу и публикацией на GitHub Pages.
+
+## Ссылка на проект
+https://seachna.github.io/mesto-ad-pages/
+
+## Запуск проекта
+```bash
+npm install
+npm run dev
